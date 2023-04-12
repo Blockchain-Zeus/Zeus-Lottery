@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  ganache-cli:
+    image: trufflesuite/ganache:latest
+    ports:
+      - "8545:8545"
+    volumes:
+      - ./ganache:/ganache   
+
+  frontend:
+    build:
+      context: ./lottery-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./lottery-frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: npm start
+
+  truffle:
+    build:
+      context: ./truffle
+    volumes:
+      - ./truffle:/truffle
+      - ./lottery-frontend/src/Lottery.json:/truffle/build/contracts/Lottery.json
+    links:
+      - ganache-cli
+    depends_on:
+      - ganache-cli
