@@ -57,13 +57,19 @@ function App() {
 
   // Call a function on the smart contract when a button is clicked
   async function handleClick() {
+    if (window.ethereum) {
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const userAddress = accounts[0];
     const result = await contract.methods.buyTicket().send({ 
-      from: nextAddress,
+      from: userAddress,
       value: web3.utils.toWei('1', 'ether'),
       gas: 3000000
      });
     console.log(result);
     setCountBuy(countBuy+1)
+    }else{
+      alert("You need to have a Wallet to buy a Ticket, for example Metamask")
+    }
   }
 
   return (
@@ -77,8 +83,8 @@ function App() {
       <Stat description={"Players"} value={players.length}></Stat>
       <Stat description={"Maximum Tickets"} value={maxPlayers}></Stat>
       </div>
-      <TextField label="Address" type="text" onInputChange={handleInputChange} value={nextAddress} />
-      <button className='rounded-lg p-3 bg-black text-white uppercase' onClick={handleClick}>Call smart contract function</button>
+     {/* <TextField label="Address" type="text" onInputChange={handleInputChange} value={nextAddress} /> */}
+      <button className='rounded-lg p-3 bg-black text-white uppercase' onClick={handleClick}>Buy a ticket for the lottery</button>
       </div>
       
       

@@ -6,7 +6,9 @@ services:
     ports:
       - "8545:8545"
     volumes:
-      - ./ganache:/ganache   
+      - ./ganache:/ganache
+      - ./keys:/keys
+    command: -n false --wallet.seed 42 --wallet.accountKeysPath /keys/keys.json
 
   frontend:
     build:
@@ -26,6 +28,7 @@ services:
     volumes:
       - ./truffle:/truffle
       - ./lottery-frontend/src/Lottery.json:/truffle/build/contracts/Lottery.json
+      - ./keys:/truffle/keys
     links:
       - ganache-cli
     depends_on:
