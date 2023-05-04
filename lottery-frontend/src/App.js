@@ -77,13 +77,17 @@ function App() {
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
       const userAddress = accounts[0];
       setAddress(userAddress);
-      
+      try{
     const result = await contract.methods.buyTicket().send({ 
       from: userAddress,
       value: web3.utils.toWei('1', 'ether'),
       gas: 3000000
      });
-    console.log(result);
+    
+  }catch(e){
+    //console.log(e.receipt)
+    alert("You are not allowed to buy multiple Tickets with one Wallet.")
+  }
     setCountBuy(countBuy+1)
     }else{
       alert("You need to have a Wallet to buy a Ticket, for example Metamask")
