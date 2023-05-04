@@ -27,7 +27,7 @@ contract Lottery {
         require(!isLocked, "Lottery is locked. Please try again later.");
         require(ticketsPerAddress[msg.sender] < maxTicketsPerAddress, "You have already purchased the maximum number of tickets.");
         require(soldTickets < ticketCount, "All tickets have been sold.");
-
+        
         isLocked = true;
 
         players.push(msg.sender);
@@ -39,10 +39,13 @@ contract Lottery {
             uint256 winnerIndex = uint256(keccak256(abi.encodePacked(block.timestamp, block.basefee, players))) % ticketCount;
 
             winner = players[winnerIndex];
-
             payable(winner).transfer(address(this).balance);
+            for(uint256 i = 0;i<players.length; i++){
+                delete ticketsPerAddress[players[i]];
+            }
             players = new address[](0);
             soldTickets = 0;
+          
         }
 
         emit NewPlayer(msg.sender, players.length);
